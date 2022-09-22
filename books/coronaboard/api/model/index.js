@@ -1,5 +1,7 @@
 const Sequelize = require('sequelize');
 
+require('dotenv').config(); // dotenv 사용설정
+
 // 데이터베이스 연결 정보 설정
 const config = {
   host: process.env.CORONABOARD_MYSQL_HOST || '127.0.0.1',
