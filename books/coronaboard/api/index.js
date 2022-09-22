@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { sequelize } = require('./model');
 const globalStatController = require('./controller/global-stat.controller');
+const keyValueController = require('./controller/key-value.controller');
 
 async function launchServer() {
     const app = express();
@@ -15,8 +16,14 @@ async function launchServer() {
     app.post('/global-stats', globalStatController.insertOrUpdate);
     app.delete('/global-stats', globalStatController.remove);
 
+    app.get('/key-value', keyValueController.getAll);
+    app.get('/key-value/:key', keyValueController.get);
+    app.post('/key-value', keyValueController.insertOrUpdate);
+    app.delete('/key-value/:key', keyValueController.remove);
+
     try {
-        await sequelize.sync();
+        // sequelize.sync(), force:true, alter:ture
+        await sequelize.sync({ force: true });
         console.log('Database is ready!');
     } catch (error) {
         console.log('Unable to connect to the database:');
