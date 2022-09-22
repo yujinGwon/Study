@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { sequelize } = require('./model');
+const globalStatController = require('./controller/global-stat.controller');
 
 async function launchServer() {
     const app = express();
@@ -9,6 +10,10 @@ async function launchServer() {
     app.get('/', (req, res) => {
         res.json({ message: 'Hello CoronaBoard!' });
     });
+
+    app.get('/global-stats', globalStatController.getAll);
+    app.post('/global-stats', globalStatController.insertOrUpdate);
+    app.delete('/global-stats', globalStatController.remove);
 
     try {
         await sequelize.sync();
