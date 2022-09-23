@@ -123,3 +123,4 @@ package-lock.json
 # coronaboard/tools/
 accessToken.json
 credentials.json
+downloaded/
