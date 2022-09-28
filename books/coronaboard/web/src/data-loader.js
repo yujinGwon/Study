@@ -2,20 +2,29 @@ const axios = require('axios');
 const { subDays } = require('date-fns');
 const { format, utcToZonedTime } = require('date-fns-tz');
 const _ = require('lodash');
-
 const countryInfo = require('../../tools/downloaded/countryInfo.json');
+const ApiClient = require('./api-client');
 
 async function getDataSource() {
     const countryByCc = _.keyBy(countryInfo, 'cc');
-    const globalStats = await generateGlobalStats();
+    const apiClient = new ApiClient();
+    
+    // 국가별 데이터 로드
+    const allGlobalStats = await apiClient.getAllGlobalStats();
+    // 날짜별로 데이터를 묶는 부분을 기존 generateGlobalStats() 함수에서 호출
+    const groupedByDate = _.groupBy(allGlobalStats, 'date');
+    const globalStats = generateGlobalStats(groupedByDate);
 
     return {
+        lastUpdated: Date.now(), // 데이터를 만든 현재 시간 기록
         globalStats,
         countryByCc,
     };
 }
 
-async function generateGlobalStats(){
+// async 9장에서 지움...
+function generateGlobalStats(groupedByDate){
+    /* 9장에서 지움...
     // HTTP 클라이언트 생성
     const apiClient = axios.create({
         baseURL: process.env.CORONABOARD_API_BASE_URL || 'http://localhost:8080',
@@ -26,10 +35,11 @@ async function generateGlobalStats(){
 
     // 날짜 기준 그룹핑
     const groupedByDate = _.groupBy(response.data.result, 'date');
+    */
 
     // 오늘/어제 날짜 생성
     // 데이터가 제공되는 마지막 날짜로 Date 객체 생성
-    const now = new Date('2021-06-05');
+    const now = new Date(); // '2021-06-05'
     const timeZone = 'Asia/Seoul';
     const today = format(utcToZonedTime(now, timeZone), 'yyyy-MM-dd');
     const yesterday = format(
