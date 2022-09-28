@@ -17,6 +17,13 @@ class ApiClient {
         const response = await this.client.get('global-stats');
         return response.result;
     }
+
+    async getByAgeAndSex() {
+        const response = await this.client.get('key-value/byAgeAndSex');
+        // byAgeAndSex 값이 직렬화된 JSON 형태로 되어 있기 때문에
+        // JSON.parse를 이용하여 객체로 변환
+        return JSON.parse(response.result.value);
+    }
 }
 
 module.exports = ApiClient;
