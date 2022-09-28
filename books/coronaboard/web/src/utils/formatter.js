@@ -35,12 +35,12 @@ export function formatDiffForTable(cur, prevOptional) {
 }
 
 // yyyy-MM-dd 형식을 간결하게 M,d 로 변환
-export function conertToMonthDay(dateString) {
+export function convertToMonthDay(dateString) {
     return format(parseISO(dateString), 'M.d');
 }
 
 // 
-export function numberWithUnitFormattter(value) {
+export function numberWithUnitFormatter(value) {
     if (value >= 100000000) {
         return (value / 100000000).toFixed(1) + '억';
     } else if (value >= 10000) {

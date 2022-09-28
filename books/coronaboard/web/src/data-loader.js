@@ -1,10 +1,13 @@
-const axios = require('axios');
 const { subDays } = require('date-fns');
 const { format, utcToZonedTime } = require('date-fns-tz');
 const _ = require('lodash');
+
 const countryInfo = require('../../tools/downloaded/countryInfo.json');
 const ApiClient = require('./api-client');
 const notice = require('../../tools/downloaded/notice.json');
+
+const path = require('path');
+const fs = require('fs-extra');
 
 async function getDataSource() {
     const countryByCc = _.keyBy(countryInfo, 'cc');
@@ -16,6 +19,15 @@ async function getDataSource() {
     const groupedByDate = _.groupBy(allGlobalStats, 'date');
     const globalStats = generateGlobalStats(groupedByDate);
 
+    // 차트에 쓰기 위해 가공된 데이터
+    const globalChartDataByCc = generateGlobalChartDataByCc(groupedByDate);
+
+    Object.keys(globalChartDataByCc).forEach((cc) => {
+        const genPath = path.join(process.cwd(), `static/generated/${cc}.json`);
+        fs.outputFileSync(genPath, JSON.stringify(globalChartDataByCc[cc]));
+    })
+
+    // 10장. 생성된 차트 데이터를 빌드 시점에 주입할 필요가 없어서 반환값에 추가되는 것이 없음
     return {
         lastUpdated: Date.now(), // 데이터를 만든 현재 시간 기록
         globalStats,
@@ -24,6 +36,88 @@ async function getDataSource() {
         notice: notice.filter((x)=> !x.hidden),
     };
 }
+
+function generateGlobalChartDataByCc(groupedByDate) {
+    // 국가 코드를 필드 이름으로 하여 차트 데이터를 저장할 객체 선언
+    const chartDataByCc = {};
+    // 모든 키 값(날짜)를 불러와서 날짜순으로 정렬
+    const dates = Object.keys(groupedByDate).sort();
+    for (const date of dates) {
+        const countriesDataForOneDay = groupedByDate[date];
+        for (const countryData of countriesDataForOneDay) {
+            const cc = countryData.cc;
+            // 특정 국가의 차트 데이터 객체가 아직 정의되지 않았다면 기본값으로 생성
+            if (!chartDataByCc[cc]) {
+                chartDataByCc[cc] = {
+                    date: [],
+                    confirmed: [], // 해당 날짜의 확진자 수
+                    confirmedAcc: [], // 해당 날짜까지의 누적 확진자 수
+                    death: [], // 사망자 수
+                    deathAcc: [],
+                    released: [],
+                    releasedAcc: [],
+                };
+            }
+            // 특정 국가의 차트 데이터에 특정 국가의 현재 날짜의 데이터를 추가
+            appendToChartData(chartDataByCc[cc], countryData, date);
+        }
+
+        // 날짜별로 모든 국가에 대한 합산 데이터를 global이라는 임의의 국가 코드에 저장
+        if(!chartDataByCc['global']) {
+            chartDataByCc['global'] = {
+                date: [],
+                confirmed: [],
+                confirmedAcc: [], 
+                death: [], 
+                deathAcc: [],
+                released: [],
+                releasedAcc: [],
+            };
+        }
+
+        const countryDataSum = countriesDataForOneDay.reduce(
+            (sum, x) => ({
+                confirmed: sum.confirmed + x.confirmed,
+                death: sum.death + x.death,
+                // release 데이터가 없는 국가들이 존재하여 별도 처리
+                released: sum.released + (x.realesed || 0),
+            }),
+            { confirmed: 0, death: 0, released: 0 },
+        );
+
+        appendToChartData(chartDataByCc['global'], countryDataSum, date);
+    }
+
+    return chartDataByCc;
+}
+
+function appendToChartData(chartData, countryData, date) {
+    // 전일 데이터가 없는 경우 현재 날짜 데이터를 그대로 사용
+    if (chartData.date.length === 0) {
+        chartData.confirmed.push(countryData.confirmed);
+        chartData.death.push(countryData.death);
+        chartData.released.push(countryData.released);
+    } else {
+        // 전일 대비 증가량 저장
+        const confirmedIncrement =
+            countryData.confirmed - _.last(chartData.confirmedAcc) || 0;
+        chartData.confirmed.push(confirmedIncrement);
+        
+        const deathIncrement = countryData.death - _.last(chartData.deathAcc) || 0;
+        chartData.death.push(deathIncrement);
+
+        const releasedIncrement =
+            countryData.released - _.last(chartData.releasedAcc) || 0;
+        chartData.released.push(releasedAcc);
+    }
+
+    chartData.confirmedAcc.push(countryData.confirmed);
+    chartData.deathAcc.push(countryData.death);
+    chartData.releasedAcc.push(countryData.released);
+
+    chartData.date.push(date);
+}
+
 
 // async 9장에서 지움...
 function generateGlobalStats(groupedByDate){

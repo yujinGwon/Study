@@ -127,3 +127,6 @@ downloaded/
 
 # coronaboard/crawler
 output/
+
+# coronaboard/web
+generated/
