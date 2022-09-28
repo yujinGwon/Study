@@ -53,7 +53,7 @@ async function getYouTubeVideosByKeyword(keyword) {
         q: keyword,
         type: 'video', // video, channel, playlist 중 하나
         part: 'id', // 검색 조건을 만족하는 비디오의 id값 만 조회
-        maxResults: 3,
+        maxResults: 5,
       },
     },
   );
