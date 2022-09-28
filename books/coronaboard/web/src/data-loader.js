@@ -4,6 +4,7 @@ const { format, utcToZonedTime } = require('date-fns-tz');
 const _ = require('lodash');
 const countryInfo = require('../../tools/downloaded/countryInfo.json');
 const ApiClient = require('./api-client');
+const notice = require('../../tools/downloaded/notice.json');
 
 async function getDataSource() {
     const countryByCc = _.keyBy(countryInfo, 'cc');
@@ -19,6 +20,8 @@ async function getDataSource() {
         lastUpdated: Date.now(), // 데이터를 만든 현재 시간 기록
         globalStats,
         countryByCc,
+        // 공지사항 목록 중 hidden 필드가 false인 항목만 필터하여 전달
+        notice: notice.filter((x)=> !x.hidden),
     };
 }
 

@@ -2,11 +2,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { css } from '@emotion/react';
 import { Dashboard } from '../components/dashboard';
+import { Notice } from '../components/notice';
 
 export default function SinglePage({ pageContext }) {
     // pageContext를 통해 전달된 데이털르 추출해서 사용
     const { dataSource } = pageContext;
-    const { lastUpdated, globalStats } = dataSource;
+    const { lastUpdated, globalStats, notice } = dataSource;
     // 사용자의 언어/지역 설정에 맞는 날짜 형태로 표시
     const lastUpdatedFormatted = new Date(lastUpdated).toLocaleString();
 
@@ -42,6 +43,7 @@ export default function SinglePage({ pageContext }) {
             </p>
 
             <Dashboard globalStats={globalStats} />
+            <Notice notice={notice} />
         </div>
     );
 }
