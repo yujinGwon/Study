@@ -25,6 +25,7 @@
     "fs-extra": "^10.0.0",
     "gatsby": "^3.10.2",
     "gatsby-plugin-emotion": "^6.3.0",
+    "gatsby-plugin-sitemap": "^4.10.0",
     "javascript-time-ago": "^2.3.7",
     "lodash": "^4.17.20",
     "react": "^17.0.1",

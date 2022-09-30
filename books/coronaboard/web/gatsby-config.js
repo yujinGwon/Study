@@ -6,5 +6,11 @@
 
 module.exports = {
   /* Your site config here */
-  plugins: ['gatsby-plugin-emotion'],
+  plugins: [
+    'gatsby-plugin-emotion',
+    'gatsby-plugin-sitemap',
+  ],
+  siteMetadata: {
+    siteUrl: 'https://coronaboard.kr',
+  },
 };
