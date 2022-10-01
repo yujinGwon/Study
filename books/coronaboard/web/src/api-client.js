@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+require('dotenv').config(); // dotenv 사용설정
+
 class ApiClient {
     constructor() {
         const client = axios.create({
