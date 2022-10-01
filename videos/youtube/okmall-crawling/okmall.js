@@ -8,6 +8,9 @@ const std = readline.createInterface({
     output: process.stdout,
 });
 
+// 최대 79개? 
+std.setPrompt("아이템의 개수를 입력하세요.(숫자 입력후 엔터): ");
+
 const getHTML = async() => {
     try {
         return await axios.get("https://www.okmall.com/products/list?cate=20009021&item_type=&page=1&sort=POINT&gi_num=2983");
@@ -16,7 +19,8 @@ const getHTML = async() => {
     }
 }
 
-const parsing = async () => {
+const parsing = async (cnt) => {
+    console.log('==== 크롤링 시작 ======');
     const html = await getHTML();
     const $ = cheerio.load(html.data);
     const $bootsList = $(".item_box");
@@ -24,8 +28,9 @@ const parsing = async () => {
     let boots = [];
     let i = 0;
 
+    
     $bootsList.each((idx, node) => {
-        if (i< 10) {
+        if (i< cnt) {
             boots.push({
                 rank: '[ ' + (idx + 1) + ' 위 ]' ,
                 brand: $(node).find(".prName_Brand").text(),
@@ -40,8 +45,14 @@ const parsing = async () => {
     });
 
     console.log(boots);
-    console.log('크롤링 완료');
+    if (cnt > i) {
+        console.log('최대 ' + boots.length + ' 위 까지 크롤링 합니다.');
+    }
+    console.log('==== 크롤링 완료 ======');
     exit();
 }
 
-parsing();
+std.prompt();
+std.on("line", (cnt) => {
+    parsing(cnt);  
+});
