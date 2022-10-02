@@ -110,7 +110,7 @@ function generateGlobalChartDataByCc(groupedByDate) {
                 confirmed: sum.confirmed + x.confirmed,
                 death: sum.death + x.death,
                 // release 데이터가 없는 국가들이 존재하여 별도 처리
-                released: sum.released + (x.realesed || 0),
+                released: sum.released + (x.released || 0),
             }),
             { confirmed: 0, death: 0, released: 0 },
         );
@@ -203,7 +203,7 @@ function createGlobalStatWithPrevField(todayStats, yesterdayStats) {
                 confirmedPrev: yesterdayStat.confirmed || 0,
                 deathPrev: yesterdayStat.death || 0,
                 negativePrev: yesterdayStat.negative || 0,
-                relesedPrev: yesterdayStat.released || 0,
+                releasedPrev: yesterdayStat.released || 0,
                 testedPrev: yesterdayStat.tested || 0,
             };
         }
