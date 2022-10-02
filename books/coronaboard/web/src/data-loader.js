@@ -138,7 +138,7 @@ function appendToChartData(chartData, countryData, date) {
 
         const releasedIncrement =
             countryData.released - _.last(chartData.releasedAcc) || 0;
-        chartData.released.push(releasedAcc);
+        chartData.released.push(releasedIncrement);
     }
 
     chartData.confirmedAcc.push(countryData.confirmed);
