@@ -23,7 +23,7 @@ async function launchServer() {
 
     try {
         // sequelize.sync(), force:true, alter:ture
-        await sequelize.sync({ force: true });
+        await sequelize.sync();
         console.log('Database is ready!');
     } catch (error) {
         console.log('Unable to connect to the database:');
