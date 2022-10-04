@@ -60,7 +60,7 @@ const parsing = async (cnt) => {
 
     //console.log('==== 출력 시작 ======');
 
-    let interval = setInterval(callback, 100);
+    let interval = setInterval(callback, 2000);
 }
 
 std.prompt();
