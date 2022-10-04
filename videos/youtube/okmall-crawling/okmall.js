@@ -44,12 +44,23 @@ const parsing = async (cnt) => {
         }
     });
 
-    console.log(boots);
     if (cnt > i) {
         console.log('최대 ' + boots.length + ' 위 까지 크롤링 합니다.');
     }
     console.log('==== 크롤링 완료 ======');
-    exit();
+
+    let j = 0;
+    const callback = () => {
+        if (j >= boots.length) {
+            clearInterval(interval);
+            exit();
+        }
+        console.log(boots[j++]);
+    }; 
+
+    //console.log('==== 출력 시작 ======');
+
+    let interval = setInterval(callback, 100);
 }
 
 std.prompt();
