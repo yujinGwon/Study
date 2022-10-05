@@ -133,3 +133,6 @@ generated/
 
 # sh 파일
 auto.sh
+
+# mac os 파일
+.DS_Store
