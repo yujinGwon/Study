@@ -130,7 +130,6 @@ output/
 
 # coronaboard/web
 generated/
-/books/coronaboard/web/main.js
 
 # sh 파일
 auto.sh
