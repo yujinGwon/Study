@@ -131,4 +131,6 @@ output/
 # coronaboard/web
 generated/
 /books/coronaboard/web/main.js
-*.sh
+
+# sh 파일
+auto.sh
