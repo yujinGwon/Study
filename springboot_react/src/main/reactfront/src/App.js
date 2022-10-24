@@ -1,31 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const App = () => {
-  const [text, setText] = useState("");
-  const [edit, setEdit] = useState(false);
 
-  let content = <div>
-    {text}
-    <button onClick={() => setEdit(true)}>수정</button>
-  </div>
+  const [posts, setPosts] = useState([]);
 
-  if (edit) {
-    content = <div>
-      <input
-        type="text"
-        value={text}
-        onChange={(e) => {
-          setText(e.target.value);
-        }} />
-      <button onClick={() => setEdit(false)}>수정</button>
-    </div>
+  useEffect(() => {
+    // axios({
+    //   method: 'GET',
+    //   url: 'https://jsonplaceholder.typicode.com/photos',
+    // }).then(response => setPosts(response.data));
 
-  }
+    axios.get('https://jsonplaceholder.typicode.com/photos')
+          .then(response => setPosts(response.data));
+          
+  })
 
   return (
-    <>
-      {content}
-    </>
+    <ul>
+      {posts.map((post) => (
+        <li key={post.id}>
+          <div>{post.title}</div>
+          <div><img src={post.thumbnailUrl} alt="이미지" /></div>
+        </li>
+      ))}
+    </ul>
+
   );
 }
 
